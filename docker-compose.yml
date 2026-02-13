@@ -1,0 +1,33 @@
+services:
+  web:
+    build:
+      context: .
+      args:
+        - TARGET_OS=web
+    ports:
+      - "8080:80"
+    restart: always
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # The Linux version (requires X11/Display setup)
+  # linux:
+  #   build:
+  #     context: .
+  #     args:
+  #       - TARGET_OS=linux
+  #   environment:
+  #     - DISPLAY=${DISPLAY:-:0}
+  #   volumes:
+  #     - /tmp/.X11-unix:/tmp/.X11-unix
+  
+  # Service to just build and output the Android APK
+  # android-build:
+  #   build:
+  #     context: .
+  #     args:
+  #       - TARGET_OS=android
+  #   image: zettelkasten-android-build

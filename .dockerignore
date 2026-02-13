@@ -1,0 +1,32 @@
+# 🌸 Extreme Cleaning for Master! <3
+**/.dart_tool/
+**/build/
+**/.pub-cache/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.packages
+**/.idea/
+**/.vscode/
+
+# Local Android/iOS configurations
+**/android/local.properties
+**/android/key.properties
+**/android/.gradle/
+**/android/app/build/
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Pods/
+**/ios/.symlinks/
+
+# Platform ephemerals
+**/linux/flutter/ephemeral/
+**/windows/flutter/ephemeral/
+**/.plugin_symlinks/
+
+# Docker/Scripts
+Dockerfile
+docker-compose.yml
+.dockerignore
+scripts/
+build/
+.artifacts/
