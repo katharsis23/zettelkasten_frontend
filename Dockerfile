@@ -15,7 +15,7 @@ RUN flutter pub get
 
 COPY ./todo_app/ .
 
-# 🌸 Fixing permissions and installing Linux dependencies if needed!
+
 USER root
 RUN if [ "$TARGET_OS" = "linux" ]; then \
     apt-get update && apt-get install -y \

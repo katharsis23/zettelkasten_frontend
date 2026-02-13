@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'pages/home_screen.dart';
 import 'pages/login_screen.dart';
@@ -8,7 +9,12 @@ import 'pages/notes_screen.dart';
 import 'pages/user_screen.dart';
 import 'pages/error_page.dart';
 
-void main() {
+// import 'api/healthcheck.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: '.env');
+
   const bool debugMode = !bool.fromEnvironment('dart.vm.product');
   runApp(
     DevicePreview(
