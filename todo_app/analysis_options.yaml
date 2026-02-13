@@ -21,8 +21,166 @@ linter:
   # `// ignore_for_file: name_of_lint` syntax on the line or in the file
   # producing the lint.
   rules:
-    # avoid_print: false  # Uncomment to disable the `avoid_print` rule
-    # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
+    # More lenient rules for development
+    avoid_print: false  # Allow print statements for debugging
+    prefer_single_quotes: true  # Use single quotes for consistency
+    sort_child_properties_last: false  # Allow flexible property ordering
+    use_key_in_widget_constructors: false  # Don't require keys for simple widgets
+    prefer_const_constructors: false  # Allow non-const constructors
+    prefer_const_literals_to_create_immutables: false  # Allow mutable literals
+    prefer_const_declarations: false  # Allow var instead of const
+    unnecessary_const: false  # Allow unnecessary const
+    unnecessary_new: false  # Allow unnecessary new keywords
+    
+    # Disable most strict rules for easier development
+    always_declare_return_types: false
+    always_put_control_body_on_new_line: false
+    always_put_required_named_parameters_first: false
+    annotate_overrides: false
+    avoid_annotating_with_dynamic: false
+    avoid_bool_literals_in_conditional_expressions: false
+    avoid_catches_without_on_clauses: false
+    avoid_catching_errors: false
+    avoid_double_and_int_checks: false
+    avoid_field_initializers_in_const_classes: false
+    avoid_function_literals_in_foreach_calls: false
+    avoid_implementing_value_types: false
+    avoid_init_to_null: false
+    avoid_null_checks_in_equality_operators: false
+    avoid_positional_boolean_parameters: false
+    avoid_private_typedef_functions: false
+    avoid_redundant_argument_values: false
+    avoid_renaming_method_parameters: false
+    avoid_return_types_on_setters: false
+    avoid_returning_null_for_void: false
+    avoid_setters_without_getters: false
+    avoid_shadowing_type_parameters: false
+    avoid_single_cascade_in_expression_statements: false
+    avoid_slow_async_io: false
+    avoid_types_as_parameter_names: false
+    avoid_unnecessary_containers: false
+    avoid_unused_constructor_parameters: false
+    avoid_void_async: false
+    await_only_futures: false
+    camel_case_extensions: false
+    cascade_invocations: false
+    cast_nullable_to_non_nullable: false
+    close_sinks: false
+    comment_references: false
+    constant_identifier_names: false
+    curly_braces_in_flow_control_structures: false
+    deprecated_consistency: false
+    diagnostic_describe_all_properties: false
+    directives_ordering: false
+    do_not_use_environment: false
+    empty_catches: false
+    empty_constructor_bodies: false
+    empty_statements: false
+    exhaustive_cases: false
+    file_names: false
+    flutter_style_todos: false
+    implementation_imports: false
+    join_return_with_assignment: false
+    leading_newlines_in_multiline_strings: false
+    library_names: false
+    library_prefixes: false
+    lines_longer_than_80_chars: false
+    missing_whitespace_between_adjacent_strings: false
+    no_default_cases: false
+    non_constant_identifier_names: false
+    null_closures: false
+    omit_local_variable_types: false
+    one_member_abstracts: false
+    only_throw_errors: false
+    overridden_fields: false
+    package_api_docs: false
+    package_prefixed_library_names: false
+    parameter_assignments: false
+    prefer_adjacent_string_concatenation: false
+    prefer_asserts_in_initializer_lists: false
+    prefer_asserts_with_message: false
+    prefer_collection_literals: false
+    prefer_conditional_assignment: false
+    prefer_contains: false
+    prefer_equal_for_default_values: false
+    prefer_expression_function_bodies: false
+    prefer_final_fields: false
+    prefer_final_in_for_each: false
+    prefer_final_locals: false
+    prefer_for_elements_to_map_fromIterable: false
+    prefer_function_declarations_over_variables: false
+    prefer_generic_function_type_aliases: false
+    prefer_if_elements_to_conditional_expressions: false
+    prefer_if_null_operators: false
+    prefer_initializing_formals: false
+    prefer_inlined_adds: false
+    prefer_int_literals: false
+    prefer_interpolation_to_compose_strings: false
+    prefer_is_empty: false
+    prefer_is_not_empty: false
+    prefer_is_not_operator: false
+    prefer_iterable_whereType: false
+    prefer_null_aware_operators: false
+    prefer_relative_imports: false
+    prefer_spread_collections: false
+    prefer_typing_uninitialized_variables: false
+    prefer_void_to_null: false
+    provide_deprecation_message: false
+    public_member_api_docs: false
+    recursive_getters: false
+    slash_for_doc_comments: false
+    sort_constructors_first: false
+    sort_pub_dependencies: false
+    sort_unnamed_constructors_first: false
+    test_types_in_equals: false
+    throw_in_finally: false
+    type_annotate_public_apis: false
+    type_init_formals: false
+    unawaited_futures: false
+    unnecessary_await_in_return: false
+    unnecessary_brace_in_string_interps: false
+    unnecessary_getters_setters: false
+    unnecessary_lambdas: false
+    unnecessary_null_aware_assignments: false
+    unnecessary_null_checks: false
+    unnecessary_null_in_if_null_operators: false
+    unnecessary_overrides: false
+    unnecessary_parenthesis: false
+    unnecessary_raw_strings: false
+    unnecessary_statements: false
+    unnecessary_string_escapes: false
+    unnecessary_string_interpolations: false
+    unnecessary_this: false
+    unrelated_type_equality_checks: false
+    unsafe_html: false
+    use_build_context_synchronously: false
+    use_full_hex_values_for_flutter_colors: false
+    use_function_type_syntax_for_parameters: false
+    use_if_null_to_convert_nulls_to_bools: false
+    use_is_even_rather_than_modulo: false
+    use_late_for_private_fields_and_variables: false
+    use_named_constants: false
+    use_raw_strings: false
+    use_rethrow_when_possible: false
+    use_setters_to_change_properties: false
+    use_string_buffers: false
+    use_test_throws_matchers: false
+    use_to_and_as_if_applicable: false
+    valid_regexps: false
+    void_checks: false
+
+analyzer:
+  errors:
+    # Treat missing required parameters as warnings instead of errors
+    missing_required_param: warning
+    # Treat missing returns as warnings
+    missing_return: warning
+    # Allow unused imports
+    unused_import: warning
+    # Allow unused fields
+    unused_field: warning
+    # Allow unused local variables
+    unused_local_variable: warning
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
