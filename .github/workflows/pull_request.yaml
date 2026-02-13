@@ -19,6 +19,10 @@ jobs:
         with:
           flutter-version: "3.35.6"
 
+      - name: Create dummy .env file
+        working-directory: ./todo_app
+        run: touch .env
+
       - name: Install dependencies
         working-directory: ./todo_app
         run: flutter pub get
