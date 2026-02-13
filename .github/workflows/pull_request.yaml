@@ -30,4 +30,4 @@ jobs:
 
       - name: Run tests
         working-directory: ./todo_app
-        run: flutter test
+        run: flutter test --exclude-tags integration

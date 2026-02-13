@@ -1,7 +1,7 @@
+@Tags(['integration'])
 import 'package:flutter_test/flutter_test.dart';
 import 'package:todo_app/api/healthcheck.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-//import 'dart:io';
 
 void main() {
   setUpAll(() async {
