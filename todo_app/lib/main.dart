@@ -13,7 +13,7 @@ import 'pages/error_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
+  await dotenv.load(fileName: '.env');
 
   const bool debugMode = !bool.fromEnvironment('dart.vm.product');
   runApp(
