@@ -16,7 +16,13 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
         },
       ),
       actions: [
-        IconButton(icon: const Icon(Icons.search), onPressed: () {}),
+        IconButton(
+          icon: const Icon(Icons.notifications),
+          onPressed: () {
+            // TODO: Implement notifications dialog window
+            return;
+          },
+        ),
         IconButton(
           icon: const Icon(Icons.person),
           onPressed: () => Navigator.pushNamed(context, '/user'),
