@@ -30,13 +30,13 @@ class AuthService {
         success: true,
         message:
             response.data['message'] ??
-            "Signup successful! Please check your email to verify your account.",
+            'Signup successful! Please check your email to verify your account.',
         user: userData,
       );
     } on DioException catch (e) {
       return AuthResult(
         success: false,
-        message: e.response?.data['detail'] ?? "Signup failed",
+        message: e.response?.data['detail'] ?? 'Signup failed',
       );
     }
   }
@@ -62,14 +62,14 @@ class AuthService {
       return AuthResult(
         success: true,
         message: userData.is_verified
-            ? "Welcome back!"
-            : "Welcome back! Please verify your email to access all features.",
+            ? 'Welcome back!'
+            : 'Welcome back! Please verify your email to access all features.',
         user: userData,
       );
     } on DioException catch (e) {
       return AuthResult(
         success: false,
-        message: e.response?.data['detail'] ?? "Login failed",
+        message: e.response?.data['detail'] ?? 'Login failed',
       );
     }
   }
@@ -90,13 +90,13 @@ class AuthService {
 
       return AuthResult(
         success: true,
-        message: "Email verified successfully!",
+        message: 'Email verified successfully!',
         user: userData,
       );
     } on DioException catch (e) {
       return AuthResult(
         success: false,
-        message: e.response?.data['detail'] ?? "Verification failed",
+        message: e.response?.data['detail'] ?? 'Verification failed',
       );
     }
   }
@@ -112,13 +112,13 @@ class AuthService {
       return AuthResult(
         success: true,
         message:
-            response.data['message'] ?? "Verification code sent successfully!",
+            response.data['message'] ?? 'Verification code sent successfully!',
       );
     } on DioException catch (e) {
       return AuthResult(
         success: false,
         message:
-            e.response?.data['detail'] ?? "Failed to resend verification code",
+            e.response?.data['detail'] ?? 'Failed to resend verification code',
       );
     }
   }
