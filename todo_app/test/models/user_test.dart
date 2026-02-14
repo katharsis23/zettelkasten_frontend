@@ -32,23 +32,31 @@ void main() {
       expect(json['avatar_url'], 'http://image.com/avatar.png');
     });
 
-    test('send_login_data returns correct map', () {
+    test('sendLoginData returns correct map', () {
       final user = User(
         email: 'test@example.com',
         username: 'testuser',
         password: 'password123',
       );
-      final data = user.send_login_data();
+      final data = user.sendLoginData();
+
+      expect(data['email'], 'test@example.com');
+      expect(data['password'], 'password123');
+      expect(data.length, 2); // Should only contain email and password
+    });
+
+    test('sendSignupData returns correct map', () {
+      final user = User(
+        email: 'test@example.com',
+        username: 'testuser',
+        password: 'password123',
+      );
+      final data = user.sendSignupData();
 
       expect(data['email'], 'test@example.com');
       expect(data['username'], 'testuser');
       expect(data['password'], 'password123');
-    });
-
-    test('set_avatar updates avatar_url', () {
-      final user = User(email: 'a@b.com', username: 'u');
-      user.set_avatar('new_url');
-      expect(user.avatar_url, 'new_url');
+      expect(data.length, 3); // Should contain email, username, and password
     });
 
     group('Token Caching & Verification', () {
@@ -56,33 +64,54 @@ void main() {
         SharedPreferences.setMockInitialValues({});
       });
 
-      test('check_verified sets is_verified to true if token exists', () async {
-        final user = User(email: 'a@b.com', username: 'u');
-        expect(user.is_verified, isFalse);
+      test(
+        'saveToken saves token without changing verification status',
+        () async {
+          final user = User(email: 'a@b.com', username: 'u');
+          expect(user.is_verified, isFalse);
 
-        // Manually set token in mock preferences
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('access_token', 'fake_token');
+          await user.saveToken('test_token');
 
-        await user.check_verified();
+          expect(user.is_verified, isFalse); // Should remain false
+
+          // Verify it's actually in SharedPreferences
+          final prefs = await SharedPreferences.getInstance();
+          expect(prefs.getString('access_token'), 'test_token');
+        },
+      );
+
+      test(
+        'saveTokenAndVerify saves token and sets is_verified to true',
+        () async {
+          final user = User(email: 'a@b.com', username: 'u');
+          expect(user.is_verified, isFalse);
+
+          await user.saveTokenAndVerify('test_token');
+
+          expect(user.is_verified, isTrue);
+
+          // Verify it's actually in SharedPreferences
+          final prefs = await SharedPreferences.getInstance();
+          expect(prefs.getString('access_token'), 'test_token');
+        },
+      );
+
+      test('fromJson handles is_verified field correctly', () {
+        final json = {
+          'email': 'test@example.com',
+          'username': 'testuser',
+          'is_verified': true,
+        };
+        final user = User.fromJson(json);
+
         expect(user.is_verified, isTrue);
       });
 
-      test('check_verified keeps is_verified false if token missing', () async {
-        final user = User(email: 'a@b.com', username: 'u');
-        await user.check_verified();
+      test('fromJson defaults is_verified to false when not provided', () {
+        final json = {'email': 'test@example.com', 'username': 'testuser'};
+        final user = User.fromJson(json);
+
         expect(user.is_verified, isFalse);
-      });
-
-      test('set_access_token_and_set_is_verified works correctly', () async {
-        final user = User(email: 'a@b.com', username: 'u');
-        await user.set_access_token_and_set_is_verified('new_token');
-
-        expect(user.is_verified, isTrue);
-
-        // Verify it's actually in SharedPreferences
-        final prefs = await SharedPreferences.getInstance();
-        expect(prefs.getString('access_token'), 'new_token');
       });
     });
   });
