@@ -79,8 +79,22 @@ class UserCacheService implements UserCacheable {
     await AvatarCache.getAvatarFile(avatarUrl);
   }
 
+  static Future<void> replaceAvatarUrl(String newAvatarUrl) async {
+    final oldUrl = await UserCache.getAvatarUrl();
+    if (oldUrl != null && oldUrl.isNotEmpty && oldUrl != newAvatarUrl) {
+      await AvatarCache.deleteCachedAvatarForUrl(oldUrl);
+    }
+
+    await UserCache.saveAvatarUrl(newAvatarUrl);
+    await AvatarCache.getAvatarFile(newAvatarUrl);
+  }
+
   static Future<File?> getAvatarFile(String avatarUrl) async {
     return await AvatarCache.getAvatarFile(avatarUrl);
+  }
+
+  static Future<void> clearAvatarFilesCache() async {
+    await AvatarCache.clearCache();
   }
 
   static Future<void> refreshAvatarCache() async {

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 class AvatarCache {
   static const String _cacheDirName = 'avatars';
   static late Directory _cacheDir;
+  static bool _initialized = false;
 
   static Future<void> init() async {
     final appDir = await getApplicationDocumentsDirectory();
@@ -13,10 +14,18 @@ class AvatarCache {
     if (!await _cacheDir.exists()) {
       await _cacheDir.create(recursive: true);
     }
+
+    _initialized = true;
+  }
+
+  static Future<void> _ensureInit() async {
+    if (_initialized) return;
+    await init();
   }
 
   static Future<File?> _getCacheFile(String url) async {
     try {
+      await _ensureInit();
       final filename = _generateFilename(url);
       final file = File('${_cacheDir.path}/$filename');
       return file;
@@ -66,6 +75,7 @@ class AvatarCache {
 
   static Future<void> clearCache() async {
     try {
+      await _ensureInit();
       if (await _cacheDir.exists()) {
         await for (final file in _cacheDir.list()) {
           await file.delete();
@@ -76,9 +86,18 @@ class AvatarCache {
     }
   }
 
+  static Future<void> deleteCachedAvatarForUrl(String url) async {
+    final file = await _getCacheFile(url);
+    if (file == null) return;
+    if (await file.exists()) {
+      await file.delete();
+    }
+  }
+
   static Future<int> getCacheSize() async {
     int totalSize = 0;
     try {
+      await _ensureInit();
       if (await _cacheDir.exists()) {
         await for (final file in _cacheDir.list()) {
           if (file is File) {

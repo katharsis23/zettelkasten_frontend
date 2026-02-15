@@ -86,9 +86,8 @@ class _AvatarWidgetState extends State<AvatarWidget> {
             final uri = Uri.parse(fixedUrl);
             final pathSegments = uri.pathSegments;
             if (pathSegments.isNotEmpty) {
-              final uuid = pathSegments.last;
-              fixedUrl =
-                  '${uri.scheme}://${uri.host}:${uri.port}/avatars/$uuid.png';
+              final fileName = pathSegments.last;
+              fixedUrl = uri.replace(path: '/avatars/$fileName').toString();
             }
           }
 
@@ -176,9 +175,8 @@ class _AvatarWidgetState extends State<AvatarWidget> {
       final uri = Uri.parse(networkUrl);
       final pathSegments = uri.pathSegments;
       if (pathSegments.isNotEmpty) {
-        final uuid = pathSegments.last;
-        networkUrl =
-            '${uri.scheme}://${uri.host}:${uri.port}/avatars/$uuid.png';
+        final fileName = pathSegments.last;
+        networkUrl = uri.replace(path: '/avatars/$fileName').toString();
       }
     }
 
