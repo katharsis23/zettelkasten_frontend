@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/api/auth.dart';
 import 'package:todo_app/pages/signup_screen.dart';
-import 'package:todo_app/cache/user_cache.dart';
+import 'package:todo_app/services/user_cache_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -38,13 +38,8 @@ class _LoginPageState extends State<LoginPage> {
 
       if (mounted) {
         if (result.success && result.user != null) {
-          // Cache user data
-          await UserCache.saveUserData(
-            email: result.user!.email,
-            username: result.user!.username,
-            avatarUrl: result.user!.avatar_url,
-            isVerified: result.user!.is_verified,
-          );
+          // Cache user data through UserCacheService
+          await UserCacheService.cacheUserFromAuthResult(result.user!);
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

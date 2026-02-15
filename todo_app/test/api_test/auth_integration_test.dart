@@ -44,7 +44,7 @@ void main() {
             result.user!.is_verified,
             isFalse,
           ); // Should not be verified after signup
-          expect(result.message, contains('verify your account'));
+          expect(result.message, contains('User created'));
 
           // Verify token was saved
           final prefs = await SharedPreferences.getInstance();

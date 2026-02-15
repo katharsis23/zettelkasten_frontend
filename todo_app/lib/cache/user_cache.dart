@@ -52,4 +52,16 @@ class UserCache {
     final userData = await getUserData();
     return userData != null;
   }
+
+  //Separated method for avatar since we have a separated endpoint for it
+  static Future<String> saveAvatarUrl(String avatarUrl) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_avatarUrlKey, avatarUrl);
+    return avatarUrl;
+  }
+
+  static Future<String?> getAvatarUrl() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_avatarUrlKey);
+  }
 }
