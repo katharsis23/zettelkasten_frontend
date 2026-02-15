@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/shared_widgets/avatar_widget.dart';
 
 class Header extends StatelessWidget implements PreferredSizeWidget {
   const Header({super.key});
@@ -23,9 +24,12 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
             return;
           },
         ),
-        IconButton(
-          icon: const Icon(Icons.person),
-          onPressed: () => Navigator.pushNamed(context, '/user'),
+        Padding(
+          padding: const EdgeInsets.only(right: 16.0),
+          child: AvatarWidget(
+            size: 32.0,
+            onTap: () => Navigator.pushNamed(context, '/user'),
+          ),
         ),
       ],
     );

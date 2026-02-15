@@ -8,12 +8,20 @@ import 'pages/tasks_screen.dart';
 import 'pages/notes_screen.dart';
 import 'pages/user_screen.dart';
 import 'pages/error_page.dart';
+import 'injection.dart';
+import 'cache/avatar_cache.dart';
 
 // import 'api/healthcheck.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');
+
+  // Initialize dependency injection
+  await configureDependencies();
+
+  // Initialize avatar cache
+  await AvatarCache.init();
 
   const bool debugMode = !bool.fromEnvironment('dart.vm.product');
   runApp(

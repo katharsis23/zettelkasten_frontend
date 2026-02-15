@@ -1,13 +1,4 @@
-import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:todo_app/injection.dart';
+import 'package:todo_app/api/dio_client.dart';
 
-String get serverUrl =>
-    dotenv.get('SERVER_URL', fallback: 'http://localhost:8000');
-
-final dio = Dio(
-  BaseOptions(
-    baseUrl: serverUrl,
-    connectTimeout: const Duration(seconds: 5),
-    receiveTimeout: const Duration(seconds: 3),
-  ),
-);
+final dio = getIt<DioClient>().dio;

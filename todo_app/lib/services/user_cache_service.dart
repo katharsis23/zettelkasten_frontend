@@ -1,6 +1,9 @@
 import 'package:todo_app/cache/user_cache.dart';
+import 'package:todo_app/cache/avatar_cache.dart';
+import 'dart:io';
 import 'package:todo_app/models/user.dart';
 import 'package:todo_app/interfaces/user_cacheable.dart';
+import 'package:todo_app/config/config.dart';
 
 // Service that implements cache operations
 class UserCacheService implements UserCacheable {
@@ -28,6 +31,7 @@ class UserCacheService implements UserCacheable {
 
   static Future<void> clearCachedUser() async {
     await UserCache.clearUserData();
+    await AvatarCache.clearCache(); // Also clear avatar cache
   }
 
   static Future<void> cacheUserFromAuthResult(User user) async {
@@ -39,11 +43,47 @@ class UserCacheService implements UserCacheable {
     );
   }
 
+  // Avatar-specific methods with file caching
   static Future<String?> getAvatarUrl() async {
-    return await UserCache.getAvatarUrl();
+    // First try SharedPreferences
+    final cachedUrl = await UserCache.getAvatarUrl();
+    if (cachedUrl != null && cachedUrl.isNotEmpty) {
+      return cachedUrl;
+    }
+
+    // Try to get cached file
+    final user = await getCachedUser();
+    if (user != null &&
+        user.avatar_url != null &&
+        user.avatar_url!.isNotEmpty) {
+      final avatarUrl = user.avatar_url!;
+      final cachedFile = await AvatarCache.getAvatarFile(avatarUrl);
+      if (cachedFile != null) {
+        // File exists and is fresh, return the URL
+        // The widget will use the file directly
+        return avatarUrl;
+      }
+    }
+
+    // Return default avatar if no avatar found
+    return '${CONFIG.bucketUrl}/avatars/default_avatar.jpeg';
   }
 
   static Future<void> saveAvatarUrl(String avatarUrl) async {
+    // Save to SharedPreferences for fallback
     await UserCache.saveAvatarUrl(avatarUrl);
+
+    // Also trigger file download for future use
+    await AvatarCache.getAvatarFile(avatarUrl);
+  }
+
+  static Future<File?> getAvatarFile(String avatarUrl) async {
+    return await AvatarCache.getAvatarFile(avatarUrl);
+  }
+
+  static Future<void> refreshAvatarCache() async {
+    // Clear avatar cache and force refresh
+    await AvatarCache.clearCache();
+    await UserCache.saveAvatarUrl(''); // Clear URL to force refresh
   }
 }

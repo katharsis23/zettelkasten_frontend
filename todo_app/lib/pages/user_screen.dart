@@ -5,6 +5,7 @@ import 'package:todo_app/pages/verification_screen.dart';
 import 'package:todo_app/services/user_cache_service.dart';
 import 'package:todo_app/services/token_service.dart';
 import 'package:todo_app/models/user.dart';
+import 'package:todo_app/shared_widgets/avatar_widget.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({super.key});
@@ -310,20 +311,7 @@ class _UserScreenState extends State<UserScreen> {
                 child: Column(
                   children: [
                     // Avatar
-                    CircleAvatar(
-                      radius: screenWidth * 0.12,
-                      backgroundColor: Theme.of(context).primaryColor,
-                      backgroundImage: _cachedUser!.avatar_url != null
-                          ? NetworkImage(_cachedUser!.avatar_url!)
-                          : null,
-                      child: _cachedUser!.avatar_url == null
-                          ? Icon(
-                              Icons.person,
-                              size: screenWidth * 0.12,
-                              color: Colors.white,
-                            )
-                          : null,
-                    ),
+                    AvatarWidget(size: screenWidth * 0.24),
                     SizedBox(height: screenHeight * 0.02),
 
                     // User Info
