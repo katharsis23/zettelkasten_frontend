@@ -3,7 +3,7 @@ import 'package:todo_app/api/auth.dart';
 import 'package:todo_app/models/user.dart';
 import 'package:todo_app/pages/verification_screen.dart';
 import 'package:todo_app/pages/login_screen.dart';
-import 'package:todo_app/cache/user_cache.dart';
+import 'package:todo_app/services/user_cache_service.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -58,13 +58,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
       if (mounted) {
         if (result.success) {
-          // Cache user data temporarily (without verification)
-          await UserCache.saveUserData(
-            email: user.email,
-            username: user.username,
-            avatarUrl: user.avatar_url,
-            isVerified: false,
-          );
+          // Cache user data through UserCacheService
+          await UserCacheService.cacheUserFromAuthResult(user);
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

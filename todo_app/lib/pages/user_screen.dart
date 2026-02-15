@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/pages/login_screen.dart';
 import 'package:todo_app/pages/signup_screen.dart';
 import 'package:todo_app/pages/verification_screen.dart';
-import 'package:todo_app/cache/access_token.dart';
-import 'package:todo_app/cache/user_cache.dart';
+import 'package:todo_app/services/user_cache_service.dart';
+import 'package:todo_app/services/token_service.dart';
+import 'package:todo_app/models/user.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({super.key});
@@ -15,7 +16,7 @@ class UserScreen extends StatefulWidget {
 class _UserScreenState extends State<UserScreen> {
   bool _isLoggedIn = false;
   bool _isLoading = true;
-  Map<String, dynamic>? _userData;
+  User? _cachedUser;
 
   @override
   void initState() {
@@ -32,14 +33,14 @@ class _UserScreenState extends State<UserScreen> {
 
   Future<void> _checkLoginStatus() async {
     try {
-      final token = await get_access_token();
-      final hasUserData = await UserCache.hasUserData();
-      final userData = await UserCache.getUserData();
+      final token = await TokenService.getToken();
+      final hasCachedUser = await UserCacheService.hasCachedUser();
+      final cachedUser = await UserCacheService.getCachedUser();
 
       if (mounted) {
         setState(() {
-          _isLoggedIn = token != null && hasUserData;
-          _userData = userData;
+          _isLoggedIn = token != null && hasCachedUser;
+          _cachedUser = cachedUser;
           _isLoading = false;
         });
       }
@@ -47,7 +48,7 @@ class _UserScreenState extends State<UserScreen> {
       if (mounted) {
         setState(() {
           _isLoggedIn = false;
-          _userData = null;
+          _cachedUser = null;
           _isLoading = false;
         });
       }
@@ -56,12 +57,12 @@ class _UserScreenState extends State<UserScreen> {
 
   Future<void> _logout() async {
     try {
-      await remove_access_token();
-      await UserCache.clearUserData();
+      await TokenService.clearToken();
+      await UserCacheService.clearCachedUser();
       if (mounted) {
         setState(() {
           _isLoggedIn = false;
-          _userData = null;
+          _cachedUser = null;
         });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -90,11 +91,11 @@ class _UserScreenState extends State<UserScreen> {
   }
 
   void _navigateToVerification() {
-    if (_userData != null) {
+    if (_cachedUser != null) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => VerificationScreen(email: _userData!['email']),
+          builder: (context) => VerificationScreen(email: _cachedUser!.email),
         ),
       ).then((_) {
         // Refresh user data after verification
@@ -125,7 +126,7 @@ class _UserScreenState extends State<UserScreen> {
       );
     }
 
-    if (!_isLoggedIn || _userData == null) {
+    if (!_isLoggedIn || _cachedUser == null) {
       // Not logged in view
       return Scaffold(
         backgroundColor: Colors.grey[50],
@@ -312,10 +313,10 @@ class _UserScreenState extends State<UserScreen> {
                     CircleAvatar(
                       radius: screenWidth * 0.12,
                       backgroundColor: Theme.of(context).primaryColor,
-                      backgroundImage: _userData!['avatar_url'] != null
-                          ? NetworkImage(_userData!['avatar_url'])
+                      backgroundImage: _cachedUser!.avatar_url != null
+                          ? NetworkImage(_cachedUser!.avatar_url!)
                           : null,
-                      child: _userData!['avatar_url'] == null
+                      child: _cachedUser!.avatar_url == null
                           ? Icon(
                               Icons.person,
                               size: screenWidth * 0.12,
@@ -327,13 +328,13 @@ class _UserScreenState extends State<UserScreen> {
 
                     // User Info
                     Text(
-                      _userData!['username'] ?? 'User',
+                      _cachedUser!.username,
                       style: Theme.of(context).textTheme.headlineSmall
                           ?.copyWith(fontSize: screenWidth * 0.05),
                     ),
                     SizedBox(height: screenHeight * 0.01),
                     Text(
-                      _userData!['email'] ?? 'user@example.com',
+                      _cachedUser!.email,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.grey[600],
                         fontSize: screenWidth * 0.04,
@@ -342,23 +343,23 @@ class _UserScreenState extends State<UserScreen> {
                     SizedBox(height: screenHeight * 0.015),
                     Chip(
                       label: Text(
-                        _userData!['is_verified'] ? 'Verified' : 'Not Verified',
+                        _cachedUser!.is_verified ? 'Verified' : 'Not Verified',
                         style: TextStyle(fontSize: screenWidth * 0.035),
                       ),
-                      backgroundColor: _userData!['is_verified']
+                      backgroundColor: _cachedUser!.is_verified
                           ? Colors.green[100]
                           : Colors.orange[100],
                       avatar: Icon(
-                        _userData!['is_verified']
+                        _cachedUser!.is_verified
                             ? Icons.verified
                             : Icons.pending,
                         size: screenWidth * 0.04,
-                        color: _userData!['is_verified']
+                        color: _cachedUser!.is_verified
                             ? Colors.green
                             : Colors.orange,
                       ),
                     ),
-                    if (!_userData!['is_verified']) ...[
+                    if (!_cachedUser!.is_verified) ...[
                       SizedBox(height: screenHeight * 0.02),
                       SizedBox(
                         width: double.infinity,
