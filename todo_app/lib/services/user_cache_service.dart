@@ -34,8 +34,6 @@ class UserCacheService implements UserCacheable {
 
     // Clear avatar files from disk
     await AvatarCache.clearCache();
-
-    print('DEBUG: User cache and avatar files cleared');
   }
 
   static Future<void> cacheUserFromAuthResult(User user) async {

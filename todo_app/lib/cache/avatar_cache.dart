@@ -51,17 +51,14 @@ class AvatarCache {
 
   static Future<File?> _downloadAndCache(String url, File cacheFile) async {
     try {
-      print('DEBUG: Downloading avatar from: $url');
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
-        print('DEBUG: Saving avatar to: ${cacheFile.path}');
         await cacheFile.writeAsBytes(response.bodyBytes);
-        print('DEBUG: Avatar file saved successfully');
         return cacheFile;
       }
     } catch (e) {
-      print('DEBUG: Error downloading avatar: $e');
+      throw Exception('Failed to download avatar: $e');
     }
 
     return null;
@@ -75,7 +72,7 @@ class AvatarCache {
         }
       }
     } catch (e) {
-      print('Error clearing avatar cache: $e');
+      throw Exception('Error clearign avatar: $e');
     }
   }
 
@@ -91,7 +88,7 @@ class AvatarCache {
         }
       }
     } catch (e) {
-      print('Error calculating cache size: $e');
+      throw Exception('Error calculation cache size: $e');
     }
     return totalSize;
   }

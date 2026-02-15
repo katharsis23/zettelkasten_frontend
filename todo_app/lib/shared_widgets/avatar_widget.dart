@@ -32,6 +32,11 @@ class _AvatarWidgetState extends State<AvatarWidget> {
     _loadAvatar();
   }
 
+  // Public method to refresh avatar
+  void refreshAvatar() {
+    _loadAvatar();
+  }
+
   Future<void> _loadAvatar() async {
     // First try to get from UserCacheService (now with file caching)
     final avatarUrl = await UserCacheService.getAvatarUrl();
@@ -46,16 +51,11 @@ class _AvatarWidgetState extends State<AvatarWidget> {
         setState(() {
           _cachedAvatarFile = cachedFile;
         });
-
-        // DEBUG: Check if file actually exists
-        print('DEBUG: Avatar file exists: ${cachedFile.existsSync()}');
-        print('DEBUG: Avatar file path: ${cachedFile.path}');
       }
     }
 
     // If no cached avatar, fetch from API
     if (_avatarUrl == null) {
-      print('DEBUG: No cached avatar, fetching from API');
       await _fetchAvatar();
     }
   }
@@ -89,28 +89,23 @@ class _AvatarWidgetState extends State<AvatarWidget> {
               final uuid = pathSegments.last;
               fixedUrl =
                   '${uri.scheme}://${uri.host}:${uri.port}/avatars/$uuid.png';
-              print('DEBUG: Fixed URL to include /avatars/: $fixedUrl');
             }
           }
 
           // Download and cache file
           final cachedFile = await UserCacheService.getAvatarFile(fixedUrl);
           if (cachedFile != null && mounted) {
-            print('DEBUG: Avatar file downloaded to: ${cachedFile.path}');
-            print('DEBUG: Avatar file exists: ${cachedFile.existsSync()}');
-            print('DEBUG: Avatar file size: ${cachedFile.lengthSync()} bytes');
-
             setState(() {
               _cachedAvatarFile = cachedFile;
             });
           } else {
-            print('DEBUG: Failed to download avatar file');
+            throw Exception('Failed to download avatar file');
           }
         }
       }
     } catch (e) {
       // Handle error silently or show toast
-      print('Error loading avatar: $e');
+      throw Exception('Error loading avatar: $e');
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
@@ -144,10 +139,6 @@ class _AvatarWidgetState extends State<AvatarWidget> {
 
     // Try cached file first (fastest)
     if (_cachedAvatarFile != null && _cachedAvatarFile!.existsSync()) {
-      print('DEBUG: Using cached file: ${_cachedAvatarFile!.path}');
-      print('DEBUG: File exists: ${_cachedAvatarFile!.existsSync()}');
-      print('DEBUG: File size: ${_cachedAvatarFile!.lengthSync()} bytes');
-
       return Container(
         width: widget.size,
         height: widget.size,
@@ -162,7 +153,6 @@ class _AvatarWidgetState extends State<AvatarWidget> {
             height: widget.size,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
-              print('DEBUG: Error loading cached file: $error');
               return _buildDefaultAvatar();
             },
           ),
@@ -189,11 +179,8 @@ class _AvatarWidgetState extends State<AvatarWidget> {
         final uuid = pathSegments.last;
         networkUrl =
             '${uri.scheme}://${uri.host}:${uri.port}/avatars/$uuid.png';
-        print('DEBUG: Fixed URL to include /avatars/: $networkUrl');
       }
     }
-
-    print('DEBUG: Using network image: $networkUrl');
 
     return Container(
       width: widget.size,
@@ -213,7 +200,6 @@ class _AvatarWidgetState extends State<AvatarWidget> {
             'Accept': 'image/*',
           },
           errorBuilder: (context, error, stackTrace) {
-            print('DEBUG: Network image error: $error');
             return _buildDefaultAvatar();
           },
           loadingBuilder: (context, child, loadingProgress) {

@@ -22,7 +22,7 @@ class DioClient {
       LogInterceptor(
         requestBody: true,
         responseBody: true,
-        logPrint: (obj) => print(obj),
+        // logPrint: (obj) => print(obj),
       ),
     );
   }

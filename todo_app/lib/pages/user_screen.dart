@@ -84,30 +84,28 @@ class _UserScreenState extends State<UserScreen> {
     }
   }
 
-  void _debugAvatarCache() {
-    print('=== AVATAR CACHE DEBUG ===');
+  // void _debugAvatarCache() {
 
-    // Test UserCacheService
-    UserCacheService.getAvatarUrl().then((url) {
-      print('Cached URL: $url');
-    });
+  //   // Test UserCacheService
+  //   UserCacheService.getAvatarUrl().then((url) {
+  //     print('Cached URL: $url');
+  //   });
 
-    UserCacheService.getCachedUser().then((user) {
-      print('Cached user avatar: ${user?.avatar_url}');
-    });
+  //   UserCacheService.getCachedUser().then((user) {
+  //     print('Cached user avatar: ${user?.avatar_url}');
+  //   });
 
-    // Test file operations
-    UserCacheService.getAvatarFile('test.jpg').then((file) {
-      if (file != null) {
-        print('File exists: ${file.existsSync()}');
-        print('File path: ${file.path}');
-      } else {
-        print('No file found');
-      }
-    });
+  //   // Test file operations
+  //   UserCacheService.getAvatarFile('test.jpg').then((file) {
+  //     if (file != null) {
+  //       print('File exists: ${file.existsSync()}');
+  //       print('File path: ${file.path}');
+  //     } else {
+  //       print('No file found');
+  //     }
+  //   });
 
-    print('=== DEBUG COMPLETE ===');
-  }
+  // }
 
   void _navigateToLogin() {
     Navigator.push(
@@ -233,31 +231,31 @@ class _UserScreenState extends State<UserScreen> {
                   ),
                   SizedBox(height: screenHeight * 0.02),
 
-                  // Debug button (development only)
-                  SizedBox(
-                    width: double.infinity,
-                    height: screenHeight * 0.06,
-                    child: ElevatedButton(
-                      onPressed: _debugAvatarCache,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            screenWidth * 0.03,
-                          ),
-                        ),
-                      ),
-                      child: Text(
-                        'Debug Avatar Cache',
-                        style: TextStyle(
-                          fontSize: screenWidth * 0.04,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: screenHeight * 0.02),
+                  // // Debug button (development only)
+                  // SizedBox(
+                  //   width: double.infinity,
+                  //   height: screenHeight * 0.06,
+                  //   child: ElevatedButton(
+                  //     onPressed: _debugAvatarCache,
+                  //     style: ElevatedButton.styleFrom(
+                  //       backgroundColor: Colors.orange,
+                  //       shape: RoundedRectangleBorder(
+                  //         borderRadius: BorderRadius.circular(
+                  //           screenWidth * 0.03,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     child: Text(
+                  //       'Debug Avatar Cache',
+                  //       style: TextStyle(
+                  //         fontSize: screenWidth * 0.04,
+                  //         fontWeight: FontWeight.bold,
+                  //         color: Colors.white,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  // SizedBox(height: screenHeight * 0.02),
 
                   // Sign Up Button
                   SizedBox(
