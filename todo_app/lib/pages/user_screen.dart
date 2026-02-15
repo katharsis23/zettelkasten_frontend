@@ -84,6 +84,31 @@ class _UserScreenState extends State<UserScreen> {
     }
   }
 
+  void _debugAvatarCache() {
+    print('=== AVATAR CACHE DEBUG ===');
+
+    // Test UserCacheService
+    UserCacheService.getAvatarUrl().then((url) {
+      print('Cached URL: $url');
+    });
+
+    UserCacheService.getCachedUser().then((user) {
+      print('Cached user avatar: ${user?.avatar_url}');
+    });
+
+    // Test file operations
+    UserCacheService.getAvatarFile('test.jpg').then((file) {
+      if (file != null) {
+        print('File exists: ${file.existsSync()}');
+        print('File path: ${file.path}');
+      } else {
+        print('No file found');
+      }
+    });
+
+    print('=== DEBUG COMPLETE ===');
+  }
+
   void _navigateToLogin() {
     Navigator.push(
       context,
@@ -142,137 +167,169 @@ class _UserScreenState extends State<UserScreen> {
           ),
         ),
         body: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: screenWidth * 0.06,
-              vertical: screenHeight * 0.04,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Logo/Icon
-                Icon(
-                  Icons.account_circle_outlined,
-                  size: screenWidth * 0.3,
-                  color: Colors.grey[400],
-                ),
-                SizedBox(height: screenHeight * 0.04),
-
-                // Welcome message
-                Text(
-                  'Welcome to Zettelkasten',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[800],
-                    fontSize: screenWidth * 0.06,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: screenWidth * 0.06,
+                vertical: screenHeight * 0.04,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Logo/Icon
+                  Icon(
+                    Icons.account_circle_outlined,
+                    size: screenWidth * 0.3,
+                    color: Colors.grey[400],
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: screenHeight * 0.02),
+                  SizedBox(height: screenHeight * 0.04),
 
-                Text(
-                  'Please sign in or create an account to access your profile and manage your notes',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Colors.grey[600],
-                    fontSize: screenWidth * 0.04,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: screenHeight * 0.08),
-
-                // Sign In Button
-                SizedBox(
-                  width: double.infinity,
-                  height: screenHeight * 0.06,
-                  child: ElevatedButton(
-                    onPressed: _navigateToLogin,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(screenWidth * 0.03),
-                      ),
+                  // Welcome message
+                  Text(
+                    'Welcome to Zettelkasten',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[800],
+                      fontSize: screenWidth * 0.06,
                     ),
-                    child: Text(
-                      'Sign In',
-                      style: TextStyle(
-                        fontSize: screenWidth * 0.04,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                SizedBox(height: screenHeight * 0.02),
+                  SizedBox(height: screenHeight * 0.02),
 
-                // Sign Up Button
-                SizedBox(
-                  width: double.infinity,
-                  height: screenHeight * 0.06,
-                  child: OutlinedButton(
-                    onPressed: _navigateToSignup,
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(
-                        color: Theme.of(context).primaryColor,
-                        width: 2,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(screenWidth * 0.03),
-                      ),
+                  Text(
+                    'Please sign in or create an account to access your profile and manage your notes',
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: Colors.grey[600],
+                      fontSize: screenWidth * 0.04,
                     ),
-                    child: Text(
-                      'Create Account',
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: screenWidth * 0.04,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                SizedBox(height: screenHeight * 0.04),
+                  SizedBox(height: screenHeight * 0.08),
 
-                // Features preview
-                Card(
-                  elevation: 2,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(screenWidth * 0.04),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(screenWidth * 0.06),
-                    child: Column(
-                      children: [
-                        Text(
-                          'With an account you can:',
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                fontSize: screenWidth * 0.045,
-                              ),
+                  // Sign In Button
+                  SizedBox(
+                    width: double.infinity,
+                    height: screenHeight * 0.06,
+                    child: ElevatedButton(
+                      onPressed: _navigateToLogin,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).primaryColor,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            screenWidth * 0.03,
+                          ),
                         ),
-                        SizedBox(height: screenHeight * 0.02),
-                        _buildFeatureItem(
-                          context,
-                          Icons.note_alt_outlined,
-                          'Create and manage notes',
+                      ),
+                      child: Text(
+                        'Sign In',
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.04,
+                          fontWeight: FontWeight.bold,
                         ),
-                        SizedBox(height: screenHeight * 0.015),
-                        _buildFeatureItem(
-                          context,
-                          Icons.sync,
-                          'Sync across devices',
-                        ),
-                        SizedBox(height: screenHeight * 0.015),
-                        _buildFeatureItem(
-                          context,
-                          Icons.share,
-                          'Share your knowledge',
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  SizedBox(height: screenHeight * 0.02),
+
+                  // Debug button (development only)
+                  SizedBox(
+                    width: double.infinity,
+                    height: screenHeight * 0.06,
+                    child: ElevatedButton(
+                      onPressed: _debugAvatarCache,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            screenWidth * 0.03,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        'Debug Avatar Cache',
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.04,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.02),
+
+                  // Sign Up Button
+                  SizedBox(
+                    width: double.infinity,
+                    height: screenHeight * 0.06,
+                    child: OutlinedButton(
+                      onPressed: _navigateToSignup,
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(
+                          color: Theme.of(context).primaryColor,
+                          width: 2,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            screenWidth * 0.03,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        'Create Account',
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: screenWidth * 0.04,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.04),
+
+                  // Features preview
+                  Card(
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(screenWidth * 0.04),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(screenWidth * 0.06),
+                      child: Column(
+                        children: [
+                          Text(
+                            'With an account you can:',
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: screenWidth * 0.045,
+                                ),
+                          ),
+                          SizedBox(height: screenHeight * 0.02),
+                          _buildFeatureItem(
+                            context,
+                            Icons.note_alt_outlined,
+                            'Create and manage notes',
+                          ),
+                          SizedBox(height: screenHeight * 0.015),
+                          _buildFeatureItem(
+                            context,
+                            Icons.sync,
+                            'Sync across devices',
+                          ),
+                          SizedBox(height: screenHeight * 0.015),
+                          _buildFeatureItem(
+                            context,
+                            Icons.share,
+                            'Share your knowledge',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

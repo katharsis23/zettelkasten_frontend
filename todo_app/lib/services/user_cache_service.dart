@@ -3,7 +3,6 @@ import 'package:todo_app/cache/avatar_cache.dart';
 import 'dart:io';
 import 'package:todo_app/models/user.dart';
 import 'package:todo_app/interfaces/user_cacheable.dart';
-import 'package:todo_app/config/config.dart';
 
 // Service that implements cache operations
 class UserCacheService implements UserCacheable {
@@ -30,8 +29,13 @@ class UserCacheService implements UserCacheable {
   }
 
   static Future<void> clearCachedUser() async {
+    // Clear all user data from SharedPreferences
     await UserCache.clearUserData();
-    await AvatarCache.clearCache(); // Also clear avatar cache
+
+    // Clear avatar files from disk
+    await AvatarCache.clearCache();
+
+    print('DEBUG: User cache and avatar files cleared');
   }
 
   static Future<void> cacheUserFromAuthResult(User user) async {
@@ -65,8 +69,8 @@ class UserCacheService implements UserCacheable {
       }
     }
 
-    // Return default avatar if no avatar found
-    return '${CONFIG.bucketUrl}/avatars/default_avatar.jpeg';
+    // Return null if no avatar found - let AvatarWidget handle it
+    return null;
   }
 
   static Future<void> saveAvatarUrl(String avatarUrl) async {
