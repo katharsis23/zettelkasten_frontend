@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:todo_app/pages/login_screen.dart';
 import 'package:todo_app/pages/signup_screen.dart';
 import 'package:todo_app/pages/verification_screen.dart';
@@ -6,6 +9,7 @@ import 'package:todo_app/services/user_cache_service.dart';
 import 'package:todo_app/services/token_service.dart';
 import 'package:todo_app/models/user.dart';
 import 'package:todo_app/shared_widgets/avatar_widget.dart';
+import 'package:todo_app/api/avatar.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({super.key});
@@ -18,6 +22,8 @@ class _UserScreenState extends State<UserScreen> {
   bool _isLoggedIn = false;
   bool _isLoading = true;
   User? _cachedUser;
+  bool _isUploadingAvatar = false;
+  int _avatarRefreshCounter = 0;
 
   @override
   void initState() {
@@ -51,6 +57,79 @@ class _UserScreenState extends State<UserScreen> {
           _isLoggedIn = false;
           _cachedUser = null;
           _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<File?> _pickAvatarFile() async {
+    if (Platform.isAndroid || Platform.isIOS) {
+      final picker = ImagePicker();
+      final picked = await picker.pickImage(source: ImageSource.gallery);
+      if (picked == null) return null;
+      return File(picked.path);
+    }
+
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      allowMultiple: false,
+      withData: false,
+    );
+
+    final path = result?.files.single.path;
+    if (path == null || path.isEmpty) return null;
+    return File(path);
+  }
+
+  Future<void> _changeAvatar() async {
+    if (_isUploadingAvatar) return;
+
+    setState(() {
+      _isUploadingAvatar = true;
+    });
+
+    try {
+      final file = await _pickAvatarFile();
+      if (file == null) {
+        return;
+      }
+
+      final ok = await AvatarAPI.upload_avatar_v2(file);
+      if (!mounted) return;
+
+      if (ok) {
+        await UserCacheService.clearAvatarFilesCache();
+        imageCache.clear();
+        imageCache.clearLiveImages();
+        setState(() {
+          _avatarRefreshCounter++;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Avatar updated'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Avatar update failed'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Avatar update failed: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isUploadingAvatar = false;
         });
       }
     }
@@ -366,7 +445,48 @@ class _UserScreenState extends State<UserScreen> {
                 child: Column(
                   children: [
                     // Avatar
-                    AvatarWidget(size: screenWidth * 0.24),
+                    AvatarWidget(
+                      key: ValueKey(_avatarRefreshCounter),
+                      size: screenWidth * 0.24,
+                      onTap: _isUploadingAvatar ? null : _changeAvatar,
+                    ),
+                    SizedBox(height: screenHeight * 0.02),
+
+                    SizedBox(
+                      width: double.infinity,
+                      height: screenHeight * 0.05,
+                      child: ElevatedButton.icon(
+                        onPressed: _isUploadingAvatar ? null : _changeAvatar,
+                        icon: _isUploadingAvatar
+                            ? SizedBox(
+                                width: screenWidth * 0.04,
+                                height: screenWidth * 0.04,
+                                child: const CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white,
+                                  ),
+                                ),
+                              )
+                            : Icon(
+                                Icons.photo_library_outlined,
+                                size: screenWidth * 0.04,
+                              ),
+                        label: Text(
+                          _isUploadingAvatar ? 'Uploading...' : 'Change avatar',
+                          style: TextStyle(fontSize: screenWidth * 0.035),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).primaryColor,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              screenWidth * 0.03,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                     SizedBox(height: screenHeight * 0.02),
 
                     // User Info
