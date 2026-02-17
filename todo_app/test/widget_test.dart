@@ -7,11 +7,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:get_it/get_it.dart';
 import 'package:todo_app/main.dart';
+import 'package:todo_app/services/task_sync_service.dart';
 
 void main() {
   testWidgets('App smoke test', (WidgetTester tester) async {
+    final getIt = GetIt.instance;
+    getIt.allowReassignment = true;
+    getIt.registerSingleton<TaskSyncService>(TaskSyncService());
     // Build our app and trigger a frame.
     await tester.pumpWidget(const ZettelkastenApp());
 
