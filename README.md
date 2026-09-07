@@ -6,6 +6,7 @@ This is frontend part of the project,
 [Backend](https://github.com/katharsis23/fastapi_todo_app.git)
 
 ## General Information
+
 App similar to obsidian but with cloud sync and todo-list
 
 ## IMPORTANT

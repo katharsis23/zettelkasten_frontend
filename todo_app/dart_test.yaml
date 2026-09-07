@@ -1,0 +1,15 @@
+# Dart test configuration
+tags:
+  unit:
+    description: "Unit tests that don't require external dependencies"
+  integration:
+    description: "Integration tests that require external services (server, network, etc.)"
+
+# Default configuration - exclude integration tests by default
+exclude_tags: "integration"
+
+# You can override this with:
+# flutter test --tags="integration"  # Run only integration tests
+# flutter test --tags="unit"         # Run only unit tests
+# flutter test                       # Run all except integration tests (default)
+# flutter test --include-tags="integration"  # Include integration tests
